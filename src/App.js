@@ -12,7 +12,6 @@ class App extends Component{
       //0: available, 1: empty hit, 10: ship, 11: ship hit 
       boardArray:[],
       torpedoCount:50,
-      fireCount:0,
       //s1: ship key, ship name, ship size, no of ship, no ship remain
       shipInfo:[[1,"Carrier",5,1,1], [2,"Battleship",4,2,2], [3,"Destroyer",3,2,2], [4,"Submarine",3,2,2], [5,"Patrol Boat",2,2,2]],
       shipPosition:[],
@@ -22,16 +21,31 @@ class App extends Component{
       winStatus:"",
       battleShipTotal:0,
       battleShipRemains:0,
-      clickedCellArray:[]
+      clickedCellArray:[],
+      boxSize: '50px'
     }
   }
 
+  getScreenWidth=()=>{  
+     var de = document.body.parentNode;
+     var db = document.body;
+     if(window.opera) return db.clientWidth;
+     if (document.compatMode=='CSS1Compat') return de.clientWidth;
+     else return db.clientWidth;
+  }
+
+
 componentDidMount(){
-  let {boardSize, boardArray, torpedoCount, shipInfo, shipPosition, shipHitCondition, boardColWidth, battleShipRemains, battleShipTotal} = this.state;
+  let {boardSize, boardArray, torpedoCount, shipInfo, shipPosition, shipHitCondition, boardColWidth, battleShipRemains, battleShipTotal, boxSize} = this.state;
   //fill initial board data with 0
   boardArray = Array(boardSize**2).fill(0);
+  let screenWidth = this.getScreenWidth()
+  if(screenWidth< 500){
+    boxSize = '40px';
+  }
+  console.log('screenWidth',screenWidth)
   //set up column width
-  boardColWidth = Array(boardSize).fill('50px')
+  boardColWidth = Array(boardSize).fill(boxSize)
   // this.createBoard();
   // this.placeShip();
 
@@ -57,48 +71,28 @@ componentDidMount(){
       // x: thens' digit, y = units' digit
       let x = Math.trunc(firstShipPosition/boardSize)%boardSize; 
       let y = firstShipPosition % boardSize;
-      // console.log("   ")
-      // console.log("1  firstShipPosition: ", firstShipPosition)
       // console.log("loopBreaker:", loopBreaker)
       if(loopBreaker<0){
         noOfShip--
         shipCount--
         break;
       }
-      // console.log("ship size: shipname", shipInfo[shipNamePosition][2], shipInfo[shipNamePosition][1])
-      // console.log("shipDirection:", shipDirection)
-      // console.log("x,y : ", x, y)
-      // console.log("x0+ship size", x + shipInfo[shipNamePosition][2])
-      // console.log("y1+ship size", y + shipInfo[shipNamePosition][2])
       // if 1st position of ship + ship size is less than board size w/direction & digit match (0, x), (1, y) 
       if((shipDirection === 0 && x + shipInfo[shipNamePosition][2]<boardSize)||(shipDirection === 1 && y + shipInfo[shipNamePosition][2]<boardSize)){
-        // console.log("  x, y :after ", x, y)
         // direction : 0 = ten, 1 = one
         let digit = shipDirection ===0 ? boardSize**1:boardSize**0
-        // console.log("digit",digit)
-        // console.log("shipInfo[shipNamePosition][2]",shipInfo[shipNamePosition][2])
         // check if any of ship positions are empty
         let checkPositionCount = 0;
         for(let i = 0;i<shipInfo[shipNamePosition][2];i++){
-          // console.log("ship pos:", x*boardSize+y+i*digit, boardArray[x*boardSize+y+i*digit])
           // check left,right,up,down position
           let xBefore = x-1 <0 ? x : x-1
           let xAfter = x+1 >= boardSize ? x : x+1
           let yBefore = y-1 < 0 ? y : y-1
           let yAfter = y+1 >= boardSize ? y : y+1
-          // console.log("x, xBefore xAfter", xBefore, x, xAfter)
-          // console.log("y, yBefore yAfter", yBefore,y, yAfter)
           if((boardArray[x*boardSize+y+i*digit]===0)&&(boardArray[(xBefore)*boardSize+y+i*digit]===0)&&(boardArray[(xAfter)*boardSize+y+i*digit]===0)&&(boardArray[x*boardSize+(yAfter)+i*digit]===0)&&(boardArray[x*boardSize+(yBefore)+i*digit]===0)){
           // if(boardArray[x*boardSize+y+i*digit]===0){
             checkPositionCount++
-          } else {
-            loopBreaker--;
-            break;
-          }
-          // console.log("checkPositionCount", checkPositionCount)
-          if(loopBreaker<0){
-            break;
-          }
+          } 
         }
         // place ship info if checkPositionCoun = size of ship
         if(checkPositionCount === shipInfo[shipNamePosition][2]){
@@ -109,13 +103,10 @@ componentDidMount(){
             currentShipPosition.push(x*boardSize+y+i*digit)
             currentShipHitCondition.push(1)
           }
-          // console.log("currentShipPosition", currentShipPosition)
           noOfShip--;
           // add a ship postion to ship position array
           shipPosition.push(currentShipPosition);
-          // console.log("shipPosition: click", shipPosition)
           shipHitCondition.push(currentShipHitCondition);
-          // console.log("shipHitCondition: click ", shipHitCondition);
           // reset current ship position array
           currentShipPosition=[];
           currentShipHitCondition=[];
@@ -124,14 +115,9 @@ componentDidMount(){
       }
     }
     shipCount--;
-    loopBreaker--;
-    if(loopBreaker<0){
-      break;
-    }
-
   }
 
-  this.setState({boardArray:boardArray, shipPosition:shipPosition, shipHitCondition:shipHitCondition, boardColWidth:boardColWidth, battleShipRemains:battleShipRemains, battleShipTotal:battleShipTotal})
+  this.setState({boardArray:boardArray, shipPosition:shipPosition, shipHitCondition:shipHitCondition, boardColWidth:boardColWidth, battleShipRemains:battleShipRemains, battleShipTotal:battleShipTotal, boxSize:boxSize})
   // console.log("shipInfo",shipInfo)
   // console.log("boardArray", boardArray)
   // console.log("shipPosition",shipPosition)
@@ -225,94 +211,93 @@ placeShip=()=>{
 
 fireClick = e =>{
   let cellId = parseInt(e.target.id);
-  let {boardArray, boardSize, torpedoCount, fireCount, shipInfo, shipPosition, shipHitCondition, shipHitMessage, winStatus, battleShipRemains, clickedCellArray}=this.state
+  let {boardArray, boardSize, torpedoCount, shipInfo, shipPosition, shipHitCondition, shipHitMessage, winStatus, battleShipRemains, clickedCellArray}=this.state
   console.log(" ")
   console.log(this.state)
 
   var x = document.getElementById(cellId);
   console.log("x: ",x)
  
-  // check torpedoCount
+  // if torpedo count >0, ones' digit of cell === 0, and win is not declared
   if(torpedoCount>0 && boardArray[cellId]%boardSize===0 && winStatus==="" ){
+    // increase one
     boardArray[cellId]++;
     torpedoCount--;
+    // ship hit message reset
     shipHitMessage="";
+    // ships are in the cell
     if(boardArray[cellId]>1){
+      //get x, y position by cell Id on ship postion array
       let pos = this.getIndexOfHit(shipPosition,cellId);
+      // ship hit condition to from 1 to 0
       shipHitCondition[pos[0]][pos[1]]=0;
-      // console.log("shipHitCondition", shipHitCondition[pos[0]])
+      // calculate individual ship block remains
       let shipRemain = shipHitCondition[pos[0]].reduce((a,b)=> a+b)
+      // calculate total ship block remains
       let totalShipRemain = shipHitCondition.reduce((a,b)=> a.concat(b)).reduce((a,b)=>a+b)
       if(totalShipRemain===0){
         winStatus = "You won the game";
-        console.log("games status: ", winStatus)
+        //make zero for ship remain count
         for(let i=0; i<shipInfo.length;i++){
           shipInfo[i][4]=0
         }
+        //reset total battle ship remain to zero
         battleShipRemains = 0;
       } else if(torpedoCount===0){
+        // torpedo count is zero, game lost
         winStatus = "You lost the game";
-        console.log("games status: ", winStatus)
       } else if(shipRemain===0){
+        //ship block to zero, then make ship hit message.
+        //boardArray[cellId] = cel value 11, 21, 31, 41, 51.
+        //divde by 10, then value = 1, 2, 3,4,5 then search value in shipInfo to check ship's name
           shipHitMessage = `${shipInfo[Math.trunc(boardArray[cellId]/boardSize)-1][1]} has been destroyed` ;
+          // reduce ship remain count
           shipInfo[Math.trunc(boardArray[cellId]/boardSize)-1][4]--;
+          // calculate total ship remain from shipInfo array
           battleShipRemains = shipInfo.map(v=>v[4]).reduce((a,b)=>a+b);
-          console.log("shipHitMessage: ", shipHitMessage)
       }
-      // console.log("sum", shipRemain)
-      // console.log("total", totalShipRemain)
     } else {
       if(torpedoCount===0){
         winStatus = "You lost the game";
+        // change background color
         x.style.backgroundColor = 'gray';
       }
 
     }
-      console.log("boardArray[cellId]", boardArray[cellId])
     if(boardArray[cellId]>1){
+      // change color if ship has been hit
       x.style.backgroundColor = 'red';
     } else {
+      // chnage color if torpedo missed
       x.style.backgroundColor = 'gray';
     }
     clickedCellArray.push(x);
+    console.log("clickedCellArray", clickedCellArray)
+    console.log("clickedCellArray id", clickedCellArray[0].id)
   }
 
-  this.setState({boardArray:boardArray, torpedoCount:torpedoCount, fireCount:fireCount, shipPosition:shipPosition, shipHitCondition:shipHitCondition, shipHitMessage:shipHitMessage, winStatus:winStatus, battleShipRemains:battleShipRemains, clickedCellArray:clickedCellArray})
+  this.setState({boardArray:boardArray, torpedoCount:torpedoCount, shipPosition:shipPosition, shipHitCondition:shipHitCondition, shipHitMessage:shipHitMessage, winStatus:winStatus, battleShipRemains:battleShipRemains, clickedCellArray:clickedCellArray})
 }
 
-
+// return [x, y] from array & number
 getIndexOfHit = (arr, k) =>{
     if (!arr){
         return [];
     }
-    // console.log("arr",arr)
-    // console.log("k", k)
-    // console.log("type of k", typeof(k))
     for(let i=0; i<arr.length; i++){
         let index = arr[i].indexOf(k);
-        // for(let j=0; j<arr[i].length;j++){
-        //   console.log("i,j", arr[i][j], i, j, k, arr[i][j]===k)
-        //   if(arr[i][j]===k){
-        //     return [i, j]
-        //   }
-        // }
-        // console.log("index",arr[i],index)
         if (index > -1){
-          // console.log("return i, index", i, index)
             return [i, index];
         }
     }
-    
     return [];
 }
-
-
 
   render(){
     console.log('render state', this.state)
     let grids = this.state.boardArray.map((v, i)=>{
       return (
-        <Board id = {i} fireClick={this.fireClick} boardValue={this.state.boardArray[i]} />
+        <Board id = {i} fireClick={this.fireClick} boardValue={this.state.boardArray[i]} boardInfo={this.state} />
         )
     })
 
@@ -333,7 +318,5 @@ getIndexOfHit = (arr, k) =>{
       )
   }
 }
-
-
 
 export default App;

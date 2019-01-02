@@ -8,8 +8,11 @@ class Board extends Component{
 // }
 				// {this.props.boardValue}
 	render(){
+		let cellStyle={
+	      height: '40px',
+	    }
 		return (
-			<div className="cell" onClick={this.props.fireClick} id={this.props.id}>
+			<div style={cellStyle} className="cell" onClick={this.props.fireClick} id={this.props.id}>
 			</div>
 			)
 	}
