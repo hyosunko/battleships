@@ -9,6 +9,7 @@ class GameInfo extends Component{
 	}
 
 	render(){
+
 		return (
 			<div className="footer">
 				<div>

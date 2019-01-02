@@ -11,7 +11,8 @@ class App extends Component{
       boardSize: 10,
       //0: available, 1: empty hit, 10: ship, 11: ship hit 
       boardArray:[],
-      torpedoCount:50,
+      shipImageArray:[],
+      torpedoCount:60,
       //s1: ship key, ship name, ship size, no of ship, no ship remain
       shipInfo:[[1,"Carrier",5,1,1], [2,"Battleship",4,2,2], [3,"Destroyer",3,2,2], [4,"Submarine",3,2,2], [5,"Patrol Boat",2,2,2]],
       shipPosition:[],
@@ -36,9 +37,10 @@ class App extends Component{
 
 
 componentDidMount(){
-  let {boardSize, boardArray, torpedoCount, shipInfo, shipPosition, shipHitCondition, boardColWidth, battleShipRemains, battleShipTotal, boxSize} = this.state;
+  let {boardSize, boardArray, torpedoCount, shipInfo, shipPosition, shipHitCondition, boardColWidth, battleShipRemains, battleShipTotal, boxSize, shipImageArray} = this.state;
   //fill initial board data with 0
   boardArray = Array(boardSize**2).fill(0);
+  shipImageArray = Array(boardSize**2).fill("");
   let screenWidth = this.getScreenWidth()
   if(screenWidth< 500){
     boxSize = '40px';
@@ -118,7 +120,8 @@ componentDidMount(){
     shipCount--;
   }
 
-  this.setState({boardArray:boardArray, shipPosition:shipPosition, shipHitCondition:shipHitCondition, boardColWidth:boardColWidth, battleShipRemains:battleShipRemains, battleShipTotal:battleShipTotal, boxSize:boxSize})
+
+  this.setState({boardArray:boardArray, shipPosition:shipPosition, shipHitCondition:shipHitCondition, boardColWidth:boardColWidth, battleShipRemains:battleShipRemains, battleShipTotal:battleShipTotal, boxSize:boxSize, shipImageArray:shipImageArray})
   // console.log("shipInfo",shipInfo)
   // console.log("boardArray", boardArray)
   // console.log("shipPosition",shipPosition)
@@ -212,7 +215,7 @@ placeShip=()=>{
 
 fireClick = e =>{
   let cellId = parseInt(e.target.id);
-  let {boardArray, boardSize, torpedoCount, shipInfo, shipPosition, shipHitCondition, shipHitMessage, winStatus, battleShipRemains, clickedCellArray}=this.state
+  let {boardArray, boardSize, torpedoCount, shipInfo, shipPosition, shipHitCondition, shipHitMessage, winStatus, battleShipRemains, clickedCellArray, shipImageArray}=this.state
   console.log(" ")
   console.log(this.state)
 
@@ -237,6 +240,7 @@ fireClick = e =>{
       // calculate total ship block remains
       let totalShipRemain = shipHitCondition.reduce((a,b)=> a.concat(b)).reduce((a,b)=>a+b)
       if(totalShipRemain===0){
+        shipImageArray=boardArray.map(v=>v>1?"🚢":"");
         winStatus = "You won the game";
         //make zero for ship remain count
         for(let i=0; i<shipInfo.length;i++){
@@ -247,6 +251,7 @@ fireClick = e =>{
       } else if(torpedoCount===0){
         // torpedo count is zero, game lost
         winStatus = "You lost the game";
+        shipImageArray=boardArray.map(v=>v>1?"🚢":"");
       } else if(shipRemain===0){
         //ship block to zero, then make ship hit message.
         //boardArray[cellId] = cel value 11, 21, 31, 41, 51.
@@ -260,6 +265,7 @@ fireClick = e =>{
     } else {
       if(torpedoCount===0){
         winStatus = "You lost the game";
+        shipImageArray=boardArray.map(v=>v>1?"🚢":"");
         // change background color
         x.style.backgroundColor = 'gray';
       }
@@ -275,9 +281,10 @@ fireClick = e =>{
     clickedCellArray.push(x);
     console.log("clickedCellArray", clickedCellArray)
     console.log("clickedCellArray id", clickedCellArray[0].id)
+    console.log("shipImageArray", shipImageArray)
   }
 
-  this.setState({boardArray:boardArray, torpedoCount:torpedoCount, shipPosition:shipPosition, shipHitCondition:shipHitCondition, shipHitMessage:shipHitMessage, winStatus:winStatus, battleShipRemains:battleShipRemains, clickedCellArray:clickedCellArray})
+  this.setState({boardArray:boardArray, torpedoCount:torpedoCount, shipPosition:shipPosition, shipHitCondition:shipHitCondition, shipHitMessage:shipHitMessage, winStatus:winStatus, battleShipRemains:battleShipRemains, clickedCellArray:clickedCellArray, shipImageArray:shipImageArray})
 }
 
 // return [x, y] from array & number
@@ -298,9 +305,10 @@ getIndexOfHit = (arr, k) =>{
     console.log('render state', this.state)
     let grids = this.state.boardArray.map((v, i)=>{
       return (
-        <Board id = {i} fireClick={this.fireClick} boardValue={this.state.boardArray[i]} boxSize={this.state.boxSize} />
+        <Board id = {i} fireClick={this.fireClick} boardValue={this.state.boardArray[i]} boxSize={this.state.boxSize} winStatus={this.state.winStatus} shipImage={this.state.shipImageArray[i]} />
         )
     })
+    console.log("grids",grids)
 
     let gridStyle={
       display: 'grid',

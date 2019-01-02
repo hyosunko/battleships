@@ -19,17 +19,25 @@
 }
 
 .cell{
-  border: 1px solid gray;
+  border: 1px solid white;
   height: 50px;
   width: 50px;
   /*margin: 0px;*/
   /*padding:0px;*/
   text-align: center;
   font-size: 1em;
-  background-color: white;
+  background-color: blue;
  /*padding-top: -15px; */
  /*vertical-align: middle; */
  align-items: center;  
+}
+
+.icon{
+  display: inline-block;
+  justify-content: center;
+  vertical-align: middle;
+  padding-top: 5px;
+
 }
 
 .title-header{
@@ -62,7 +70,7 @@
   font-size: 0.9em;
   font-weight: 500;
   margin: 0px;
-  margin-left: -260px;
+  margin-left: -250px;
   color: red;
 }
 .game-info{
@@ -74,7 +82,7 @@
   font-size: 0.8em;
   font-weight: 500;
   text-align: left;
-  padding-left: 20px;
+  padding-left: 80px;
 }
 
 .button1 {
@@ -92,5 +100,6 @@
 }
 
 .form-button{
-  margin-top: -20px;
+  margin-top: -15px;
+  padding-left: 50px;
 }
