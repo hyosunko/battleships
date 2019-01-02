@@ -1,0 +1,95 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.cell{
+  border: 1px solid black;
+  height: 50px;
+  width: 50px;
+  /*margin: 0px;*/
+  /*padding:0px;*/
+  text-align: center;
+  font-size: 1em;
+  background-color: white;
+ /*padding-top: -15px; */
+ /*vertical-align: middle; */
+ align-items: center;  
+}
+
+.title-header{
+  font-size: 3em;
+  font-weight: 700;
+  text-align: center;
+  margin: 10px;
+  padding: 10px;
+  /*justify-content: center;*/
+  /*border: 1px solid red;*/
+}
+
+.title-header p{
+  /*border: 1px solid black;*/
+  color: red;
+  height: 40px;
+  font-size: 0.4em;
+  font-weight: 500;
+  text-align: center;
+  margin: 0px;
+  /*margin-left: -310px;  */
+}
+.footer{
+  /*border: 1px solid blue;*/
+  text-align: center;
+}
+.footer p{
+  /*border: 1px solid black;*/
+  text-align: center;
+  font-size: 1.0em;
+  font-weight: 500;
+  margin: 0px;
+  margin-left: -310px;
+  color: red;
+}
+.game-info{
+  /*border: 1px solid green;*/
+  color: blue;
+  width: 500px;
+  height: 150px;
+  margin: auto;
+  font-size: 0.8em;
+  font-weight: 500;
+  text-align: left;
+}
+
+.button1 {
+  background-color: #0E89C7;
+  border: none;
+  color: white;
+  font-size: 0.8em;
+  text-align: center;
+  display: inline-block;
+  height: 25px;
+  width: 70px;
+  border-radius: 999px;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  cursor: pointer;
+}
+
+.form-button{
+  margin-top: -30px;
+}
