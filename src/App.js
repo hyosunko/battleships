@@ -46,6 +46,7 @@ componentDidMount(){
   console.log('screenWidth',screenWidth)
   //set up column width
   boardColWidth = Array(boardSize).fill(boxSize)
+  console.log("boardColWidth", boardColWidth)
   // this.createBoard();
   // this.placeShip();
 
