@@ -297,7 +297,7 @@ getIndexOfHit = (arr, k) =>{
     console.log('render state', this.state)
     let grids = this.state.boardArray.map((v, i)=>{
       return (
-        <Board id = {i} fireClick={this.fireClick} boardValue={this.state.boardArray[i]} boardInfo={this.state} />
+        <Board id = {i} fireClick={this.fireClick} boardValue={this.state.boardArray[i]} boxSize={this.state.boxSize} />
         )
     })
 
