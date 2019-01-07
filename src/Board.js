@@ -18,7 +18,7 @@ class Board extends Component{
 		let cellStyle={
 	      height: this.props.boxSize,
 	      width: this.props.boxSize,
-	      // backgroundColor: 'blue',
+	      backgroundColor: 'blue',
 	      // backgroundImage: `url(${this.state.img})`
 	    }
 		return (
